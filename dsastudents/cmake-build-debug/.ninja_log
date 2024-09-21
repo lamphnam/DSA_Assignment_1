@@ -1,0 +1,6 @@
+# ninja log v5
+6	817	7477486436467114	CMakeFiles/MyExecutable.dir/main.cpp.obj	142ee842c9d217cc
+818	1179	7477486440047340	MyExecutable.exe	d383280cfb26e52a
+3	269	7480365775473250	build.ninja	57000178e1307e1f
+9	1020	7478607670403302	CMakeFiles/dsaAssignment1.dir/main.cpp.obj	13dc478a3f51a3fd
+1021	1411	7478607674288744	dsaAssignment1.exe	c7c93a224eba7ed5
