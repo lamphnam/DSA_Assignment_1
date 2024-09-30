@@ -158,7 +158,7 @@ public:
     public:
         Node(Node *next = 0, Node *prev = 0) {
             this->next = next;
-             this->prev =prev;
+            this->prev = prev;
         }
 
         Node(T data, Node *next = 0, Node *prev = 0) {
@@ -244,117 +244,305 @@ template<class T>
 DLinkedList<T>::DLinkedList(
     void (*deleteUserData)(DLinkedList<T> *),
     bool (*itemEqual)(T &, T &)) {
-    // TODO
+    this->deleteUserData = deleteUserData;
+    this->itemEqual = itemEqual;
+
+    head = new Node();
+    tail = new Node();
+
+    head->next = tail;
+    tail->prev = head;
+
+    count = 0;
 }
 
 template<class T>
 DLinkedList<T>::DLinkedList(const DLinkedList<T> &list) {
     // TODO
+    // Gán các hàm con trỏ từ danh sách cũ
+    this->deleteUserData = list.deleteUserData;
+    this->itemEqual = list.itemEqual;
+
+    // Tạo nút đầu và nút đuôi mới
+    head = new Node();
+    tail = new Node();
+
+    head->next = tail;
+    tail->prev = head;
+
+    count = 0; // Khởi tạo số lượng mục bằng 0
+
+    // Sao chép từng nút từ danh sách cũ
+    Node *current = list.head->next; // Bắt đầu từ nút đầu thực sự
+    while (current != list.tail) {
+        // Lặp cho đến khi gặp nút đuôi
+        add(current->data); // Sử dụng phương thức add để thêm dữ liệu vào danh sách mới
+        current = current->next; // Di chuyển đến nút tiếp theo
+    }
 }
 
 template<class T>
 DLinkedList<T> &DLinkedList<T>::operator=(const DLinkedList<T> &list) {
-    // TODO
+    if (this != &list) {
+        // Kiểm tra xem có phải gán chính nó không
+        clear(); // Xóa danh sách hiện tại để tránh rò rỉ bộ nhớ
+
+        // Gán các hàm con trỏ
+        this->deleteUserData = list.deleteUserData;
+        this->itemEqual = list.itemEqual;
+
+        // Tạo nút đầu và nút đuôi mới
+        head = new Node();
+        tail = new Node();
+        head->next = tail;
+        tail->prev = head;
+        count = 0;
+
+        // Sao chép dữ liệu từ danh sách cũ
+        Node *current = list.head->next; // Bắt đầu từ nút đầu thực sự
+        while (current != list.tail) {
+            add(current->data); // Sử dụng phương thức add để thêm dữ liệu
+            current = current->next; // Di chuyển đến nút tiếp theo
+        }
+    }
+    return *this; // Trả về tham chiếu đến danh sách hiện tại
 }
 
 template<class T>
 DLinkedList<T>::~DLinkedList() {
-    // TODO
+    clear(); // Gọi phương thức clear để xóa tất cả các mục
+    delete head; // Giải phóng bộ nhớ cho nút đầu
+    delete tail; // Giải phóng bộ nhớ cho nút đuôi
 }
 
 template<class T>
 void DLinkedList<T>::add(T e) {
     // TODO
+    Node *newNode = new Node(e);
 
+    newNode->prev = tail->prev;
+    newNode->next = tail;
+    tail->prev->next = newNode;
+    tail->prev = newNode;
+    count++;
 }
 
 template<class T>
 void DLinkedList<T>::add(int index, T e) {
-    // TODO
+    if (index < 0 || index > count) {
+        throw out_of_range("Index is out of range.");
+    }
+
+    Node *newNode = new Node(e);
+
+    if (index == count) { // Thêm vào cuối danh sách
+        newNode->prev = tail->prev;
+        newNode->next = tail;
+        tail->prev->next = newNode;
+        tail->prev = newNode;
+    } else {
+        Node *current = getPreviousNodeOf(index);
+        newNode->next = current->next; // Cập nhật next của newNode
+        newNode->prev = current; // Cập nhật prev của newNode
+
+        if (current->next != nullptr) {
+            current->next->prev = newNode; // Cập nhật prev của nút tiếp theo
+        }
+        current->next = newNode; // Cập nhật next của current
+    }
+
+    count++; // Tăng số lượng mục trong danh sách
 }
 
 template<class T>
 typename DLinkedList<T>::Node *DLinkedList<T>::getPreviousNodeOf(int index) {
-    /**
-     * Returns the node preceding the specified index in the doubly linked list.
-     * If the index is in the first half of the list, it traverses from the head; otherwise, it traverses from the tail.
-     * Efficiently navigates to the node by choosing the shorter path based on the index's position.
-     */
-    // TODO
+    if (index < 0 || index > count) {
+        throw out_of_range("Index is out of range.");
+    }
+
+    Node *current = head; // Bắt đầu từ nút đầu
+
+    for (int i = 0; i < index; ++i) {
+        current = current->next; // Di chuyển tới nút tiếp theo
+    }
+
+    return current; // Trả về nút trước chỉ số
 }
+
 
 template<class T>
 T DLinkedList<T>::removeAt(int index) {
-    // TODO
+    if (index < 0 || index >= count) {
+        throw out_of_range("Index is out of range.");
+    }
 
+    Node* current = getPreviousNodeOf(index + 1);
+    T data = current->data;
+
+    // Cập nhật các con trỏ nếu current không phải là nút đầu hoặc nút cuối
+    if (current->prev != nullptr) {
+        current->prev->next = current->next;
+    }
+    if (current->next != nullptr) {
+        current->next->prev = current->prev;
+    }
+
+    delete current; // Giải phóng bộ nhớ cho nút hiện tại
+
+    count--; // Giảm số lượng phần tử
+
+    return data; // Trả về dữ liệu của nút đã xóa
 }
+
 
 template<class T>
 bool DLinkedList<T>::empty() {
     // TODO
+    return count == 0;
 }
 
 template<class T>
 int DLinkedList<T>::size() {
     // TODO
+    return count;
 }
 
 template<class T>
 void DLinkedList<T>::clear() {
-    // TODO
+    if (head == nullptr || tail == nullptr) {
+        return; // Danh sách đã rỗng hoặc không hợp lệ
+    }
+
+    Node* current = head->next;
+
+    while (current != tail) {
+        Node* nextNode = current->next;
+        delete current;
+        current = nextNode;
+    }
+
+    head->next = tail;
+    tail->prev = head;
+    count = 0;
 }
+
 
 template<class T>
 T &DLinkedList<T>::get(int index) {
-    // TODO
+    if (index < 0 || index >= count) {
+        throw out_of_range("Index is out of range."); // Kiểm tra chỉ số hợp lệ
+    }
+
+    Node* current = getPreviousNodeOf(index + 1); // Lấy nút tại vị trí chỉ định
+    return current->data; // Trả về dữ liệu của nút
 }
 
-template<class T>
-int DLinkedList<T>::indexOf(T item) {
-    // TODO
+
+template <typename T>
+int DLinkedList<T>::indexOf(T value) {
+    Node* current = head;
+    int index = 0;
+
+    while (current != nullptr) {
+        if (current->data == value) { // Assuming T has an operator==
+            return index; // Found the value
+        }
+        current = current->next;
+        index++;
+    }
+    return -1; // Return -1 if not found
 }
 
 template<class T>
 bool DLinkedList<T>::removeItem(T item, void (*removeItemData)(T)) {
-    // TODO
+    Iterator it = begin(); // Bắt đầu từ đầu danh sách
+
+    while (it != end()) { // Duyệt qua tất cả các phần tử
+        if (equals(*it, item, this->itemEqual)) { // Kiểm tra xem phần tử có bằng với item không
+            it.remove(removeItemData); // Xóa phần tử hiện tại
+            return true; // Trả về true nếu xóa thành công
+        }
+        ++it; // Tiến tới phần tử tiếp theo
+    }
+
+    return false; // Trả về false nếu không tìm thấy phần tử để xóa
 }
+
 
 template<class T>
 bool DLinkedList<T>::contains(T item) {
-    // TODO
+    Iterator it = begin(); // Bắt đầu từ đầu danh sách
+
+    while (it != end()) { // Duyệt qua tất cả các phần tử
+        if (equals(*it, item, this->itemEqual)) { // Kiểm tra xem phần tử có bằng với item không
+            return true; // Trả về true nếu tìm thấy phần tử
+        }
+        ++it; // Tiến tới phần tử tiếp theo
+    }
+
+    return false; // Trả về false nếu không tìm thấy phần tử
 }
+
 
 template<class T>
 string DLinkedList<T>::toString(string (*item2str)(T &)) {
-    /**
-     * Converts the list into a string representation, where each element is formatted using a user-provided function.
-     * If no custom function is provided, it directly uses the element's default string representation.
-     * Example: If the list contains {1, 2, 3} and the provided function formats integers, calling toString would return "[1, 2, 3]".
-     *
-     * @param item2str A function that converts an item of type T to a string. If null, default to string conversion of T.
-     * @return A string representation of the list with elements separated by commas and enclosed in square brackets.
-     */
-    // TODO
+    if (head == nullptr || tail == nullptr) {
+        return "[]"; // Danh sách rỗng
+    }
+
+    stringstream ss;
+    Node *current = head->next; // Bắt đầu từ nút đầu tiên
+
+    ss << "[";
+    while (current != tail) { // Duyệt qua danh sách
+        if (item2str != nullptr) {
+            ss << item2str(current->data); // Sử dụng hàm tùy chỉnh để chuyển đổi
+        } else {
+            ss << current->data; // Sử dụng toán tử stream mặc định cho kiểu T
+        }
+
+        current = current->next;
+        if (current != tail) {
+            ss << ", "; // Thêm dấu phân cách giữa các mục
+        }
+    }
+    ss << "]";
+
+    return ss.str();
 }
 
 template<class T>
 void DLinkedList<T>::copyFrom(const DLinkedList<T> &list) {
-    /**
-     * Copies the contents of another doubly linked list into this list.
-     * Initializes the current list to an empty state and then duplicates all data and pointers from the source list.
-     * Iterates through the source list and adds each element, preserving the order of the nodes.
-     */
-    // TODO
+    // Xóa nội dung hiện tại để đảm bảo danh sách trống
+    clear();
+
+    // Kiểm tra nếu danh sách nguồn không rỗng
+    if (list.empty()) {
+        return; // Nếu danh sách nguồn trống, không cần làm gì thêm
+    }
+
+    // Duyệt qua danh sách nguồn và thêm từng phần tử vào danh sách hiện tại
+    for (Iterator it = list.begin(); it != list.end(); ++it) {
+        add(*it); // Thêm phần tử vào danh sách hiện tại
+    }
 }
+
 
 template<class T>
 void DLinkedList<T>::removeInternalData() {
-    /**
-     * Clears the internal data of the list by deleting all nodes and user-defined data.
-     * If a custom deletion function is provided, it is used to free the user's data stored in the nodes.
-     * Traverses and deletes each node between the head and tail to release memory.
-     */
-    // TODO
+    Node *current = head->next; // Bắt đầu từ nút đầu tiên (sau nút đầu)
+    while (current != tail) { // Duyệt đến nút trước nút cuối
+        Node *nextNode = current->next; // Lưu trữ nút tiếp theo
+        if (deleteUserData) { // Kiểm tra xem có hàm xóa dữ liệu người dùng không
+            deleteUserData(current); // Gọi hàm xóa nếu có
+        }
+        delete current; // Xóa nút hiện tại
+        current = nextNode; // Di chuyển đến nút tiếp theo
+    }
+    head->next = tail; // Đặt lại con trỏ của nút đầu
+    tail->prev = head; // Đặt lại con trỏ của nút cuối
+    count = 0; // Đặt lại số lượng phần tử
 }
+
 
 #endif /* DLINKEDLIST_H */

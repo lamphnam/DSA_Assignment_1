@@ -16,109 +16,136 @@
 
 #include <iostream>
 #include <iomanip>
-#include "include/list/DLinkedList.h"
-#include "include/util/Point.h"
+#include "DLinkedList.h"
+#include "../util/Point.h"
 using namespace std;
 
-void dlistDemo1(){
-    List<int> dlist;
-    for(int i = 0; i< 20 ; i++)
-        dlist.add(i, i*i);
-    dlist.println();
-    
-    for(List<int>::Iterator it=dlist.begin(); it != dlist.end(); it++ )
-        cout << *it << " ";
-    cout << endl;
+void dlistDemo(){
+    List<int> sample;
+    for(int i = 0; i< 20; i++)
+        sample.add(i, i*i);
+    List<int> test1(sample);
+    if(test1.toString() == "[0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, 256, 289, 324, 361]"){
+        cout << "Test 1 success" << endl;
+    } else {
+        cout << "Test 1 failed" << endl;
+    };
+    List<int> test2;
+    test2 = sample;
+    if(test2.toString() == "[0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, 256, 289, 324, 361]"){
+        cout << "Test 2 success" << endl;
+    } else {
+        cout << "Test 2 failed" << endl;
+    };
+    List<int> test3 = sample;
+    if(test3.toString() == "[0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, 256, 289, 324, 361]"){
+        cout << "Test 3 success" << endl;
+    } else {
+        cout << "Test 3 failed" << endl;
+    };
+    List<int> test4 = sample;
+    test4.add(999);
+    if(test4.toString() == "[0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, 256, 289, 324, 361, 999]"){
+        cout << "Test 4 success" << endl;
+    } else {
+        cout << "Test 4 failed" << endl;
+    };
+    test4.add(0,-1);
+    if(test4.toString() == "[-1, 0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, 256, 289, 324, 361, 999]"){
+        cout << "Test 5 success" << endl;
+    } else {
+        cout << "Test 5 failed" << endl;
+    };
+    test4.add(4,8);
+    if(test4.toString() == "[-1, 0, 1, 4, 8, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, 256, 289, 324, 361, 999]"){
+        cout << "Test 6 success" << endl;
+    } else {
+        cout << "Test 6 failed" << endl;
+    };  
 }
-void dlistDemo2(){
-    DLinkedList<Point*> list1(&DLinkedList<Point*>::free, &Point::pointEQ);
-    list1.add(new Point(23.2f, 25.4f));
-    list1.add(new Point(24.6f, 23.1f));
-    list1.add(new Point(12.5f, 22.3f));
-
-    for(DLinkedList<Point*>::Iterator it = list1.begin(); it != list1.end(); it++)
-        cout << **it << endl;
-
-    Point* p1 = new Point(24.6f, 23.1f); //found in list
-    Point* p2 = new Point(124.6f, 23.1f); //not found
-    cout << *p1 << "=> " << (list1.contains(p1)? "found; " : "not found; ")
-                << " indexOf returns: " << list1.indexOf(p1) << endl;
-    cout << *p2 << "=> " << (list1.contains(p2)? "found; " : "not found; ")
-                << " indexOf returns: " << list1.indexOf(p2) << endl;
-
-    ///Different results if not pass &Point::equals
-    cout << endl << endl;
-    DLinkedList<Point*> list2(&DLinkedList<Point*>::free);
-    list2.add(new Point(23.2f, 25.4f));
-    list2.add(new Point(24.6f, 23.1f));
-    list2.add(new Point(12.5f, 22.3f));
-
-    for(DLinkedList<Point*>::Iterator it = list2.begin(); it != list2.end(); it++)
-        cout << **it << endl;
-
-    cout << *p1 << "=> " << (list2.contains(p1)? "found; " : "not found; ")
-                << " indexOf returns: " << list2.indexOf(p1) << endl;
-    cout << *p2 << "=> " << (list2.contains(p2)? "found; " : "not found; ")
-                << " indexOf returns: " << list2.indexOf(p2) << endl;
-
-    delete p1; delete p2;
-}
-
-void dlistDemo3(){
-    DLinkedList<Point> dList;
-    dList.add(Point(1.5, 3.5));
-    dList.add(Point(2.5, 4.5));
-    dList.add(Point(1.6, 3.1));
-
-    cout << "test for indexOf: " << endl;
-    Point p(1.6, 3.1);
-    cout << p << " at: " << dList.indexOf(p);
-}
-bool pointComparator(Point*& p1, Point*& p2){
-    return (p1->getX() == p2->getX()) && (p1->getY() == p2->getY());
-}
-string LpointPtr2Str(Point*& ptr){
-    stringstream os;
-    os << "("   << ptr->getX() << ", "
-                << ptr->getY()
-       << ")";
-    return os.str();
-}
-void dlistDemo4(){
-    DLinkedList<Point*> dList(&DLinkedList<Point*>::free, &pointComparator);
-    dList.add(new Point(1.5, 3.5));
-    dList.add(new Point(2.5, 4.5));
-    dList.add(new Point(1.6, 3.1));
-    dList.println(&LpointPtr2Str);
-
-    cout << "test for indexOf: " << endl;
-    Point* p = new Point(1.6, 3.1);
-    cout << *p << " at: " << dList.indexOf(p) << endl;
-    delete p;
-}
-void dlistDemo5(){
-    DLinkedList<float> dList;
-    dList.add(3.2);
-    dList.add(5.5);
-    dList.println();
-    cout << "index of 5.5: " << dList.indexOf(5.5) << endl;
-    cout << "index of 15.5: " << dList.indexOf(15.5) << endl;
-}
-
-void dlistDemo6(){
+void dlistDemo7()
+{
     List<int> list;
-    for(int i = 0; i< 10 ; i++)
-        list.add(i, i*i);
-    
-    cout << setw(25) << left << "Original list: ";
-    list.println();
-    
-    //
-    int& item = list.get(5);
-    item = 999;
-    cout << setw(25) << left << "After changing an item: ";
-    list.println();
-}
+    for (int i = 0; i < 10; i++)
+        list.add(i, i * i);
 
+    list.println();
+    if (list.toString() == "[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]")
+    {
+        cout << "Success" << endl;
+    }
+    else
+        cout << "Failed" << endl;
+
+    list.add(5, 999);
+    list.add(0, 123);
+    list.add(1, 124);
+    list.add(12, 1222);
+    list.println();
+    if (list.toString() == "[123, 124, 0, 1, 4, 9, 16, 999, 25, 36, 49, 64, 1222, 81]")
+    {
+        cout << "Success" << endl;
+    }
+    else
+        cout << "Failed" << endl;
+
+    list.removeAt(13);
+    list.removeAt(0);
+    list.removeAt(5);
+    list.add(10);
+    list.println();
+    if (list.toString() == "[124, 0, 1, 4, 9, 999, 25, 36, 49, 64, 1222, 10]")
+        cout << "Success" << endl;
+    else
+        cout << "Failed" << endl;
+
+    list.removeItem(64);
+    list.removeItem(90);
+    list.println();
+    if (list.toString() == "[124, 0, 1, 4, 9, 999, 25, 36, 49, 1222, 10]")
+        cout << "Success" << endl;
+    else
+        cout << "Failed" << endl;
+
+    List<int> list1 = list;
+    list1.add(1);
+    list1.println();
+    if (list1.toString() == "[124, 0, 1, 4, 9, 999, 25, 36, 49, 1222, 10, 1]")
+        cout << "Success" << endl;
+    else
+        cout << "Failed" << endl;
+
+    list1 = list;
+    list1.add(2);
+    list1.println();
+    if (list1.toString() == "[124, 0, 1, 4, 9, 999, 25, 36, 49, 1222, 10, 2]")
+    {
+        cout << "Success" << endl;
+    }
+    else
+    {
+        cout << "Failed" << endl;
+    }
+
+    if (!list1.contains(100))
+    {
+        cout << "100 not in list1" << endl;
+    }
+    else
+        cout << "Wrong" << endl;
+    if (list.contains(1222))
+    {
+        cout << "1222 in list1" << endl;
+    }
+    else
+        cout << "Wrong" << endl;
+
+    list.clear();
+    list.println();
+    if (list.empty())
+        cout << "List is empty" << endl;
+    else
+        cout << "Wrong" << endl;
+}
 #endif /* DLINKEDLISTDEMO_H */
 
