@@ -294,8 +294,7 @@ template<class T>
 void XArrayList<T>::add(T e) {
     // TODO
     ensureCapacity(count + 1);
-    data[count] = e;
-    count++;
+    data[count++] = e;
 }
 
 template<class T>
@@ -313,12 +312,12 @@ void XArrayList<T>::add(int index, T e) {
 template<class T>
 T XArrayList<T>::removeAt(int index) {
     checkIndex(index);
-    T removedElement = data[index];
+    T ValueRemove = data[index];
     for (int i = index; i < count - 1; i++) {
         data[i] = data[i + 1];
     }
     count--;
-    return removedElement;
+    return ValueRemove;
 }
 
 
@@ -352,7 +351,7 @@ int XArrayList<T>::size() {
 template<class T>
 void XArrayList<T>::clear() {
     // TODO
-    if (data) delete[] data;
+    if (data != nullptr) delete[] data;
     data = new T[5];
     count = 0;
     capacity = 5;
@@ -432,10 +431,10 @@ void XArrayList<T>::ensureCapacity(int index) {
      * In case of memory allocation failure, catches std::bad_alloc.
      */
     // TODO
-    checkIndex(index);
     if (index >= capacity) {
         int new_capacity = capacity * 1.5;
         T *newdata = new T[new_capacity];
+
         for (int i = 0; i < count; i++) {
             newdata[i] = data[i];
         }

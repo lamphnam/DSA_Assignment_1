@@ -22,11 +22,9 @@
   <component name="ChangeListManager">
     <list default="true" id="f8f42f77-b284-4a54-bbb7-e3f0e1e11c81" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsastudents/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/dsastudents/.vscode/settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsastudents/include/ann/dataset.h" beforeDir="false" afterPath="$PROJECT_DIR$/dsastudents/include/ann/dataset.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dsastudents/include/list/DLinkedList.h" beforeDir="false" afterPath="$PROJECT_DIR$/dsastudents/include/list/DLinkedList.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsastudents/include/list/DLinkedListDemo.h" beforeDir="false" afterPath="$PROJECT_DIR$/dsastudents/include/list/DLinkedListDemo.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsastudents/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/dsastudents/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dsastudents/output_program.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dsastudents/include/list/XArrayList.h" beforeDir="false" afterPath="$PROJECT_DIR$/dsastudents/include/list/XArrayList.h" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +65,7 @@
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/namui/OneDrive/Desktop/dsastudents&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/namui/OneDrive/Desktop/dsatutorials&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -101,7 +99,9 @@
       <workItem from="1726736441270" duration="3964000" />
       <workItem from="1726816840770" duration="666000" />
       <workItem from="1726909149778" duration="7315000" />
-      <workItem from="1727690636644" duration="1872000" />
+      <workItem from="1727690636644" duration="1984000" />
+      <workItem from="1727780734595" duration="1612000" />
+      <workItem from="1727790095564" duration="1563000" />
     </task>
     <servers />
   </component>

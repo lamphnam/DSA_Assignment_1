@@ -71,37 +71,45 @@ public:
      * 1. data, label;
      * 2. data_shape, label_shape
     */
-    TensorDataset(xt::xarray<DType> data, xt::xarray<LType> label){
+    TensorDataset(xt::xarray<DType> data, xt::xarray<LType> label):data(data), label(label){
         /* TODO: your code is here for the initialization
          */
+        data_shape = data.shape();
+        label_shape = label.shape();
     }
     /* len():
      *  return the size of dimension 0
     */
-    int len(){
+    int len() override{
         /* TODO: your code is here to return the dataset's length
          */
-        return 0; //remove it when complete
+
+        return this->data.shape()[0];
     }
     
     /* getitem:
      * return the data item (of type: DataLabel) that is specified by index
      */
-    DataLabel<DType, LType> getitem(int index){
-        /* TODO: your code is here
-         */
-    }
+    DataLabel<DType, LType> getitem(int index) override {
+    // Lấy phần tử data và label tại vị trí index
+    xt::xarray<DType> sample_data = xt::view(data, index);
+    xt::xarray<LType> sample_label = xt::view(label, index);
+    
+    // Trả về một đối tượng DataLabel với data và label tương ứng
+    return DataLabel<DType, LType>(sample_data, sample_label);
+}
     
     xt::svector<unsigned long> get_data_shape(){
         /* TODO: your code is here to return data_shape
          */
+        return this->data_shape;
     }
     xt::svector<unsigned long> get_label_shape(){
         /* TODO: your code is here to return label_shape
          */
+        return this->label_shape;
     }
 };
-
 
 
 #endif /* DATASET_H */
