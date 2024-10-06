@@ -37,6 +37,7 @@ public:
     Batch(xt::xarray<DType> data,  xt::xarray<LType> label):
     data(data), label(label){
     }
+    Batch() {} //Default 
     virtual ~Batch(){}
     xt::xarray<DType>& getData(){return data; }
     xt::xarray<LType>& getLabel(){return label; }

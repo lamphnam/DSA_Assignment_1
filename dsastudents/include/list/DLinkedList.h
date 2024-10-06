@@ -132,6 +132,7 @@ public:
 
 protected:
     static bool equals(T &lhs, T &rhs, bool (*itemEqual)(T &, T &)) {
+        if (&lhs == nullptr || &rhs == nullptr) return false;
         if (itemEqual == 0)
             return lhs == rhs;
         else
@@ -228,6 +229,38 @@ public:
             return iterator;
         }
     };
+    class BWDIterator{
+        public:
+    // Constructor for the BWDIterator
+    BWDIterator(DLinkedList<T>* list, bool begin)
+        : current(begin ? list->lastNode : list->beforeFirstNode) {}
+
+    // Overload the dereference operator
+    T& operator*() {
+        return current->data;
+    }
+
+    // Overload the pre-decrement operator
+    BWDIterator& operator--() {
+        current = current->prev;
+        return *this;
+    }
+
+    // Overload the post-decrement operator
+    BWDIterator operator--(int) {
+        BWDIterator temp = *this;
+        --(*this);
+        return temp;
+    }
+
+    // Overload the not-equal operator
+    bool operator!=(const BWDIterator& other) const {
+        return current != other.current;
+    }
+
+private:
+    Node *current;  // Pointer to the current node in the iteration
+};
 };
 
 //////////////////////////////////////////////////////////////////////
@@ -438,18 +471,28 @@ T &DLinkedList<T>::get(int index) {
 
 template <typename T>
 int DLinkedList<T>::indexOf(T value) {
-    Node* current = head;
-    int index = 0;
-
-    while (current != nullptr) {
-        if (current->data == value) { 
-            return index; 
-        }
-        current = current->next;
-        index++;
+    // Nếu danh sách rỗng
+    if (head == nullptr) {
+        return -1; // Danh sách rỗng
     }
-    return -1; 
+
+    Node* current = head->next; // Bắt đầu từ nút đầu tiên
+    int index = 0; // Khởi tạo chỉ số
+
+    // Kiểm tra cho đến khi gặp nút tail
+    while (current != tail) { 
+        // So sánh dữ liệu trong current với value
+        if (equals(current->data, value, this->itemEqual)) { 
+            return index; // Nếu tìm thấy, trả về chỉ số
+        }
+        current = current->next; // Tiến đến nút tiếp theo
+        index++; // Tăng chỉ số
+    }
+
+    return -1; // Nếu không tìm thấy, trả về -1
 }
+
+
 
 template<class T>
 bool DLinkedList<T>::removeItem(T item, void (*removeItemData)(T)) {
