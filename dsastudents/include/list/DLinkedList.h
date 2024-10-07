@@ -229,38 +229,71 @@ public:
             return iterator;
         }
     };
-    class BWDIterator{
-        public:
-    // Constructor for the BWDIterator
-    BWDIterator(DLinkedList<T>* list, bool begin)
-        : current(begin ? list->lastNode : list->beforeFirstNode) {}
+    class BWDIterator {
+private:
+    DLinkedList<T> *pList;
+    Node *pNode;
 
-    // Overload the dereference operator
-    T& operator*() {
-        return current->data;
+public:
+    // Constructor: if `begin` is true, points to the last real element (before tail)
+    BWDIterator(DLinkedList<T> *pList = 0, bool begin = true) {
+        if (begin) {
+            if (pList != 0)
+                this->pNode = pList->tail->prev;  // Point to the last real element
+            else
+                pNode = 0;
+        } else {
+            if (pList != 0)
+                this->pNode = pList->head;  // Point to the head (before the first real element)
+            else
+                pNode = 0;
+        }
+        this->pList = pList;
     }
 
-    // Overload the pre-decrement operator
-    BWDIterator& operator--() {
-        current = current->prev;
+    // Assignment operator
+    BWDIterator &operator=(const BWDIterator &iterator) {
+        this->pNode = iterator.pNode;
+        this->pList = iterator.pList;
         return *this;
     }
 
-    // Overload the post-decrement operator
+    // Remove the current node (like in forward iterator)
+    void remove(void (*removeItemData)(T) = 0) {
+        pNode->prev->next = pNode->next;
+        pNode->next->prev = pNode->prev;
+        Node *pPrev = pNode->next; // MUST be next, so iterator-- will go to begin
+        if (removeItemData != 0)
+            removeItemData(pNode->data);
+        delete pNode;
+        pNode = pPrev;
+        pList->count -= 1;
+    }
+
+    // Dereference operator to access the current node's data
+    T &operator*() {
+        return pNode->data;
+    }
+
+    // Inequality operator to check if two iterators are not equal
+    bool operator!=(const BWDIterator &iterator) {
+        return pNode != iterator.pNode;
+    }
+
+    // Prefix -- overload: move to the previous node
+    BWDIterator &operator--() {
+        pNode = pNode->prev;
+        return *this;
+    }
+
+    // Postfix -- overload: move to the previous node (but returns the iterator before moving)
     BWDIterator operator--(int) {
-        BWDIterator temp = *this;
-        --(*this);
-        return temp;
+        BWDIterator iterator = *this;
+        --*this;
+        return iterator;
     }
-
-    // Overload the not-equal operator
-    bool operator!=(const BWDIterator& other) const {
-        return current != other.current;
-    }
-
-private:
-    Node *current;  // Pointer to the current node in the iteration
 };
+
 };
 
 //////////////////////////////////////////////////////////////////////

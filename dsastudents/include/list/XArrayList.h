@@ -287,7 +287,7 @@ XArrayList<T> &XArrayList<T>::operator=(const XArrayList<T> &list) {
 template<class T>
 XArrayList<T>::~XArrayList() {
     // TODO
-    delete [] this->data;
+    delete[] data;
 }
 
 template<class T>
@@ -300,7 +300,9 @@ void XArrayList<T>::add(T e) {
 template<class T>
 void XArrayList<T>::add(int index, T e) {
     // TODO
-    checkIndex(index);
+    if (index < 0 || index > count) {
+        throw std::out_of_range("Index is out of range!");
+    }
     ensureCapacity(count + 1);
     for (int i = count; i > index; i--) {
         data[i] = data[i - 1];
@@ -347,15 +349,26 @@ int XArrayList<T>::size() {
     // TODO
     return count;
 }
-
 template<class T>
 void XArrayList<T>::clear() {
-    // TODO
-    if (data != nullptr) delete[] data;
+    // If T is a pointer type, delete the objects it points to
+    if constexpr (std::is_pointer<T>::value) {
+        for (int i = 0; i < count; ++i) {
+            delete data[i];  // Free each object (assuming T is a pointer type)
+        }
+    }
+    
+    // Now that the objects are freed (if necessary), delete the array of T
+    if (data != nullptr) {
+        delete[] data;
+    }
+
+    // Reset the array to a default size of 5
     data = new T[5];
     count = 0;
     capacity = 5;
 }
+
 
 template<class T>
 T &XArrayList<T>::get(int index) {
@@ -400,9 +413,17 @@ string XArrayList<T>::toString(string (*item2str)(T &)) {
     // TODO
     stringstream ss;
     ss << "[";
-    for (int i = 0; i < count - 1; i++) ss << data[i] << ", ";
-    if (count > 0) ss << data[count - 1] << "]";
-    else ss << "]";
+    for (int i = 0; i < count; i++) {
+        if (item2str != nullptr) {
+            ss << item2str(data[i]);
+        } else {
+            ss << data[i];
+        }
+        if (i < count - 1) {
+            ss << ", ";
+        }
+    }
+    ss << "]";
     return ss.str();
 }
 
@@ -417,8 +438,8 @@ void XArrayList<T>::checkIndex(int index) {
      * Ensures safe access to the list's elements by preventing invalid index operations.
      */
     // TODO
-    if (index < 0 || index > capacity) {
-        throw std::out_of_range("the input index is out of range!");
+    if (index < 0 || index >= count) {
+        throw std::out_of_range("Index is out of range!");
     }
 }
 
@@ -432,16 +453,21 @@ void XArrayList<T>::ensureCapacity(int index) {
      */
     // TODO
     if (index >= capacity) {
-        int new_capacity = capacity * 1.5;
-        T *newdata = new T[new_capacity];
-
-        for (int i = 0; i < count; i++) {
-            newdata[i] = data[i];
+        int new_capacity = capacity == 0 ? 1 : capacity * 2;  // Nhân đôi dung lượng
+        try {
+            T* newdata = new T[new_capacity];
+            
+            // Sao chép dữ liệu cũ sang mảng mới
+            for (int i = 0; i < count; i++) {
+                newdata[i] = data[i];
+            }
+            
+            delete[] data;  // Giải phóng bộ nhớ cũ
+            data = newdata; // Gán mảng mới cho data
+            capacity = new_capacity;  // Cập nhật dung lượng mới
+        } catch (const std::bad_alloc&) {
+            throw std::runtime_error("Memory allocation failed while resizing the array");
         }
-
-        delete [] data;
-        data = newdata;
-        capacity = new_capacity;
     }
 }
 

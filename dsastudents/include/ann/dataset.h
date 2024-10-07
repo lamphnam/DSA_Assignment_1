@@ -76,7 +76,11 @@ public:
         /* TODO: your code is here for the initialization
          */
         data_shape = data.shape();
-        label_shape = label.shape();
+        if (label.size() > 0) {
+            label_shape = label.shape();
+        } else {
+            label_shape = {0};  
+        }
     }
     /* len():
      *  return the size of dimension 0
@@ -93,13 +97,18 @@ public:
      */
     DataLabel<DType, LType> getitem(int index) override {
     // Lấy phần tử data và label tại vị trí index
-    xt::xarray<DType> sample_data = xt::view(data, index);
-    xt::xarray<LType> sample_label = xt::view(label, index);
-    
+    if (index < 0 || index >= data.shape(0)) {
+        throw std::out_of_range("Index is out of range!");
+    }
+    try{
+    auto sample_data = xt::view(data, index);
+    auto sample_label = xt::view(label, index);
     // Trả về một đối tượng DataLabel với data và label tương ứng
     return DataLabel<DType, LType>(sample_data, sample_label);
-}
-    
+    }catch(const std::bad_array_new_length &e) {
+        return DataLabel<DType, LType>(this->data[index], this->label[index]);
+        }    
+    }
     xt::svector<unsigned long> get_data_shape(){
         /* TODO: your code is here to return data_shape
          */

@@ -10,6 +10,8 @@
 
 using namespace std;
 
+// !compile: g++ -Iinclude -std=c++17 main.cpp -o output_program
+
 void dataloadertc3(){
     xt::random::seed(10);
     xt::xarray<double> X = xt::random::randn<double>({105, 10, 10});
@@ -23,6 +25,7 @@ void dataloadertc3(){
     cout << xt::adapt((*(++it)).getData().shape()) << endl;
     cout << xt::adapt((*(++it)).getLabel().shape()) << endl;
 }
+
 
 void dataloadertc6(){
     xt::random::seed(10);
@@ -38,8 +41,12 @@ void dataloadertc6(){
 
 
 int main(int argc, char **argv) {
-    dataloadertc3();
-    dataloadertc6();
+    xlistDemo1();
+    xlistDemo2();
+    xlistDemo3();
+    xlistDemo4();
+    // dataloadertc3();
+    // dataloadertc6();
     
     return 0;
 }   
