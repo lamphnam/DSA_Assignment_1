@@ -41,12 +41,7 @@ void dataloadertc6(){
 
 
 int main(int argc, char **argv) {
-    xlistDemo1();
-    xlistDemo2();
-    xlistDemo3();
-    xlistDemo4();
-    // dataloadertc3();
-    // dataloadertc6();
+    
     
     return 0;
 }   

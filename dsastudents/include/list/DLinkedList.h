@@ -394,7 +394,7 @@ void DLinkedList<T>::add(T e) {
 template<class T>
 void DLinkedList<T>::add(int index, T e) {
     if (index < 0 || index > count) {
-        throw out_of_range("Index is out of range.");
+        throw out_of_range("Index is out of range!");
     }
 
     Node *newNode = new Node(e);
@@ -422,7 +422,7 @@ void DLinkedList<T>::add(int index, T e) {
 template<class T>
 typename DLinkedList<T>::Node *DLinkedList<T>::getPreviousNodeOf(int index) {
     if (index < 0 || index > count) {
-        throw out_of_range("Index is out of range.");
+        throw out_of_range("Index is out of range!");
     }
 
     Node *current = head; 
@@ -437,7 +437,7 @@ typename DLinkedList<T>::Node *DLinkedList<T>::getPreviousNodeOf(int index) {
 template<class T>
 T DLinkedList<T>::removeAt(int index) {
     if (index < 0 || index >= count) {
-        throw out_of_range("Index is out of range.");
+        throw out_of_range("Index is out of range!");
     }
 
     Node* current = getPreviousNodeOf(index + 1);
@@ -494,7 +494,7 @@ void DLinkedList<T>::clear() {
 template<class T>
 T &DLinkedList<T>::get(int index) {
     if (index < 0 || index >= count) {
-        throw out_of_range("Index is out of range."); 
+        throw out_of_range("Index is out of range!"); 
     }
 
     Node* current = getPreviousNodeOf(index + 1); 
